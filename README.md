@@ -1,3 +1,4 @@
+[![GitHub Pages](https://img.shields.io/badge/view-site-green?logo=github)](https://mbj1434.github.io/etws-graphic-designs/)
 # 🌿 ETWS Graphic Design Microsite
 
 Welcome to the official microsite for **ETWS Graphic Design** — a modular, multilingual, and remixable showcase of eco-friendly POD design collections.
