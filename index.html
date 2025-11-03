@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ETWS Graphic Design</title>
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f7f7f7;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+    .card h2 {
+      margin-top: 0.5rem;
+    }
+    .button, .export-btn {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .export-btn {
+      background-color: #2196F3;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">ETWS Graphic Design</h1>
+  <p id="subtitle">Explore modular POD design packs for eco travel, budget adventures, and remixable merch.</p>
+
+  <select id="langSwitcher">
+    <option value="en">English</option>
+    <option value="ms">Bahasa Melayu</option>
+  </select>
+
+  <div class="grid" id="cardGrid"></div>
+
+  <script>
+    let collections = [];
+
+    function renderCards(lang) {
+      const grid = document.getElementById("cardGrid");
+      grid.innerHTML = "";
+      collections.forEach(col => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="assets/visuals/${col.img}" alt="${col.title[lang === 'ms' ? 1 : 0]}">
+          <h2>${col.title[lang === 'ms' ? 1 : 0]}</h2>
+          <a href="${col.link}" class="button">${lang === 'ms' ? "Lihat Koleksi" : "View Collection"}</a>
+          <button class="export-btn" onclick="exportCard(this.parentElement)">Export PNG</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function exportCard(card) {
+      html2canvas(card).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'etws-design-preview.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    document.getElementById("langSwitcher").addEventListener("change", (e) => {
+      const lang = e.target.value;
+      document.getElementById("title").textContent = lang === "ms" ? "ETWS Reka Bentuk Grafik" : "ETWS Graphic Design";
+      document.getElementById("subtitle").textContent = lang === "ms"
+        ? "Terokai pakej reka bentuk POD modular untuk perjalanan eko, bajet dan barangan boleh ubah suai."
+        : "Explore modular POD design packs for eco travel, budget adventures, and remixable merch.";
+      renderCards(lang);
+    });
+
+    fetch("collections.json")
+      .then(response => response.json())
+      .then(data => {
+        collections = data.sort((a, b) => a.title[0].localeCompare(b.title[0]));
+        renderCards("en");
+      });
+  </script>
+</body>
+</html>
